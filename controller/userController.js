@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config()
 import userModel from '../models/user.js'
+import bcrypt from 'bcrypt'
+
 
 
 
@@ -15,15 +17,18 @@ class userController{
             if(name && email && password && password_confirmation && tc){
                 if(password === password_confirmation){
                     try {
+                        const salt = await bcrypt.genSalt(10)
+                        const hashPassword = await bcrypt.hash(password, salt)
                         const doc = new userModel({
                             name:name,
                             email:email,
-                            password:password,
+                            password:hashPassword,
                             tc:tc
                         })
 
                         await doc.save()
                         
+
 
                     } catch (error) {
                         console.log(error)
